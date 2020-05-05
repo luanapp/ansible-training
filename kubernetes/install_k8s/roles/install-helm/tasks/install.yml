@@ -1,0 +1,23 @@
+- name: Get Heml3 installation script
+  get_url: 
+    url: "{{ helm3_url }}"
+    dest: /tmp/get-helm-3
+    mode: '700'
+  register: get_helm
+
+- name: Execute Helm3 installer
+  shell:
+    cmd: "{{ get_helm.dest }}"
+  when:
+  - get_helm.failed|bool == false
+  register: install_helm
+
+- name: Checking installation result
+  debug:
+    msg: "Helm installed with result {{ install_helm.rc }}"
+
+- name: Remove helm installer
+  file:
+    path: "{{ get_helm.dest }}"
+    state: absent
+
