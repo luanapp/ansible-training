@@ -1,5 +1,5 @@
 - name: Helm add repo
-  shell: help repo add stable {{ url_repo_helm }}
+  shell: helm repo add stable {{ url_repo_helm }}
   register: prometheus_add_repo
 
 - name: Helm repo update 
