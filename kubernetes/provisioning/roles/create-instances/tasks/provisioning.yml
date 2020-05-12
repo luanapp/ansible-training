@@ -55,6 +55,18 @@
       cidr_ip: 0.0.0.0/0
       rule_desc: WeaveNet
 
+    - proto: tcp
+      from_port: 32222
+      to_port: 32222
+      cidr_ip: 0.0.0.0/0
+      rule_desc: Giropops
+
+    - proto: tcp
+      from_port: 32111
+      to_port: 32111
+      cidr_ip: 0.0.0.0/0
+      rule_desc: GiropopsPrometheus
+
     rules_egress:
     - proto: all
       cidr_ip: 0.0.0.0/0
