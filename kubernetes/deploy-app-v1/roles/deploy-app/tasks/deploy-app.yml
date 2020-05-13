@@ -17,7 +17,9 @@
 
 
 - name: Copying app service file to host
-  copy: src={{ item.src }} dest= {{ item.dest  }}
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
   with_items:
     - { src: 'service_app.yml', dest: '/opt/giropops/service_app.yml' }
   register: copy_service_file

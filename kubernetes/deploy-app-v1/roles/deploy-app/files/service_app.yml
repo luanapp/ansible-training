@@ -17,6 +17,7 @@ spec:
     targetPort: 80
   - nodePort: 32111
     name: prometheus
+    port: 32111
     protocol: TCP
     targetPort: 32111
   selector:
