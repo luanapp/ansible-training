@@ -1,5 +1,6 @@
 - name: Installing Docker
   shell: curl -fsSL https://get.docker.com | bash
+  notify: Restart Docker
 
 - name: Adding k8s apt repo keys
   apt_key:
@@ -19,4 +20,5 @@
       - kubelet
       - kubeadm
       - kubectl
+  notify: Restart Kubelet
 

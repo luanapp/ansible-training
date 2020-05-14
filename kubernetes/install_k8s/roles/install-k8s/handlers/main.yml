@@ -1,2 +1,11 @@
 ---
 # handlers file for install-k8s
+- name: Restart Docker
+  service:
+    name: docker
+    state: restarted
+
+- name: Restart Docker
+  service:
+    name: kubelet
+    state: restarted
