@@ -1,0 +1,54 @@
+# Needed to k8s module
+- name: Installing pip
+  apt:
+    name: python-pip
+
+- name: Installing k8s module dependencies
+  pip:
+    name: 
+      - openshift
+      - PyYAML
+    state: latest
+  register: install_dependencies
+  failed_when: "'Requirement already up-to-date' not in install_dependencies.msg"
+
+- name: Copy app v1 deployment file
+  template:
+    src: app-v1.yml.j2
+    dest: /opt/giropops/app-v1.yml
+    owner: root
+    group: root
+    mode: 0644
+  register: copy_app_v1_deploy
+
+- name: Copy app v2 deployment file
+  template:
+    src: app-v2.yml.j2
+    dest: /opt/giropops/app-v2.yml
+    owner: root
+    group: root
+    mode: 0644
+  register: copy_app_v2_deploy
+
+- name: App v2 deploy
+  k8s:
+    namespace: default
+    src: /opt/giropops/app-v2.yml
+    state: present
+
+- name: App v1 scale down
+  k8s:
+    namespace: default
+    src: /opt/giropops/app-v1.yml
+    state: present
+
+- name: Wait 2 minutes
+  pause:
+    prompt: App-v1 will be removed in the next 2 minutes. Press Ctrl+c to cancel
+    minutes: 2
+
+- name: Remove app-v1
+  k8s:
+    namespace: default
+    state: absent
+    src: /opt/giropops/app-v1.yml
