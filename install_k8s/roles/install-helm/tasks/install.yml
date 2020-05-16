@@ -15,6 +15,7 @@
 - name: Checking installation result
   debug:
     msg: "Helm installed with result {{ install_helm.rc }}"
+    verbosity: 1
 
 - name: Remove helm installer
   file:

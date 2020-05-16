@@ -2,15 +2,22 @@
 - name: Installing pip
   apt:
     name: python-pip
+    state: latest
+
+- name: Updating pip
+  pip:
+    name: pip
+    extra_args: --upgrade
+    state: latest
+  run_once: true
 
 - name: Installing k8s module dependencies
   pip:
     name: 
       - openshift
       - PyYAML
-    state: latest
+    state: forcereinstall
   register: install_dependencies
-  failed_when: "'Requirement already up-to-date' not in install_dependencies.msg"
 
 - name: Copy app v1 deployment file
   template:

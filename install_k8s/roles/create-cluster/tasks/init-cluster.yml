@@ -20,29 +20,20 @@
     state: link
 
 - name: Configuring pod network weavenet
-  shell: kubectl apply -f {{ default_url_weavenet }}
+  shell: "kubectl apply -f {{ weavenet_default_url }}"
   register: weavenet_result
 
-- name: Getting kubeadm init token for adding workers into cluster
-  shell: kubeadm token list | cut -d ' ' -f1 | sed -n '2p'
-  register: k8s_token
+- name: Get join command from master
+  shell: kubeadm token create --print-join-command
+  register: join_command
 
-- name: CA hash
-  #shell: openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
-  shell: openssl x509 -in /etc/kubernetes/pki/ca.crt -noout -pubkey | openssl rsa -pubin -outform DER 2>/dev/null | sha256sum | cut -d ' ' -f1
-  register: k8s_master_ca_hash
-
-- name: Adding token and hash into a dummy host
+- name: Adding join command into a dummy host
   add_host:
-    name: "K8S_TOKEN_HOLDER"
-    token: "{{ k8s_token.stdout }}"
-    hash: "{{ k8s_master_ca_hash.stdout }}"
+    name: "K8S_JOIN_HOLDER"
+    join_command: "{{ join_command.stdout_lines[0] }}"
 
 - name:
   debug:
-    msg: "[MASTER] K8S_TOKEN_HOLDER - The token is {{ hostvars['K8S_TOKEN_HOLDER']['token'] }}"
-
-- name:
-  debug:
-    msg: "[MASTER] K8S_TOKEN_HOLDER - The hash is {{ hostvars['K8S_TOKEN_HOLDER']['hash'] }}"
+    msg: "[MASTER] K8S_JOIN_HOLDER - Join command {{ hostvars['K8S_JOIN_HOLDER']['join_command'] }}"
+    verbosity: 2
 

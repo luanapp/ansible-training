@@ -1,6 +1,26 @@
+- name: Get docker installation script
+  get_url: 
+    url: "{{ docker_url }}"
+    dest: /tmp/get-docker
+    mode: '700'
+  register: get_docker
+
 - name: Installing Docker
-  shell: curl -fsSL https://get.docker.com | bash
+  shell:
+    cmd: "{{ get_docker.dest }}"
+  when: get_docker.failed|bool == false
+  register: install_docker
   notify: Restart Docker
+
+- name: Checking installation result
+  debug:
+    msg: "Docker installed with result {{ install_docker.rc }}"
+    verbosity: 1
+
+- name: Remove docker installer
+  file:
+    path: "{{ get_docker.dest }}"
+    state: absent
 
 - name: Adding k8s apt repo keys
   apt_key:
