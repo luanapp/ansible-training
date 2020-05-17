@@ -15,13 +15,14 @@ spec:
       annotations:
         prometheus.io/scrape: "{{ prometheus_scrape }}"
         prometheus.io/port: "{{ prometheus_port }}"
-    containers:
-    - name: giropops
-      image: linuxtips/nginx-prometheus-exporter:{{ new_version }}
-      env:
-      - name: VERSION
-        value: {{ new_version }}
-      ports:
-      - containerPort: {{ nginx_port }}
-      - containerPort: {{ prometheus_port }}
+    spec:
+      containers:
+      - name: giropops
+        image: linuxtips/nginx-prometheus-exporter:{{ new_version }}
+        env:
+        - name: VERSION
+          value: {{ new_version }}
+        ports:
+        - containerPort: {{ nginx_port }}
+        - containerPort: {{ prometheus_port }}
   

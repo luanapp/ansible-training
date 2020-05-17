@@ -19,35 +19,22 @@
     state: forcereinstall
   register: install_dependencies
 
-- name: Copy app v1 deployment file
+- name: Copy app v1 and v2 deployment file
   template:
-    src: app-v1.yml.j2
-    dest: /opt/giropops/app-v1.yml
+    src: "{{ item.value }}.j2"
+    dest: "{{ giropops_folder }}/{{ item.value }}"
     owner: root
     group: root
     mode: 0644
-  register: copy_app_v1_deploy
+  with_items: "{{ deployment_files | dict2items }}"
+  register: copy_app_deploy
 
-- name: Copy app v2 deployment file
-  template:
-    src: app-v2.yml.j2
-    dest: /opt/giropops/app-v2.yml
-    owner: root
-    group: root
-    mode: 0644
-  register: copy_app_v2_deploy
-
-- name: App v2 deploy
+- name: App v2 deploy and v1 scale down
   k8s:
     namespace: default
-    src: /opt/giropops/app-v2.yml
+    src: "{{ giropops_folder }}/{{ item.value }}"
     state: present
-
-- name: App v1 scale down
-  k8s:
-    namespace: default
-    src: /opt/giropops/app-v1.yml
-    state: present
+  with_items: "{{ deployment_files | dict2items }}"
 
 - name: Wait 2 minutes
   pause:
@@ -58,4 +45,4 @@
   k8s:
     namespace: default
     state: absent
-    src: /opt/giropops/app-v1.yml
+    src: "{{ giropops_folder }}/{{ deployment_files.v1 }}"

@@ -1,5 +1,9 @@
 ---
 # vars file for deploy-app
+giropops_folder: /opt/giropops
+deployment_files:
+  - { type: deploy, filename: app-v1.yml }
+  - { type: service, filename: service_app.yml }
 num_replicas: 10
 version: 1.0.0
 prometheus_scrape: "true"

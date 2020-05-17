@@ -1,5 +1,9 @@
 ---
 # vars file for deploy-app-v2
+giropops_folder: /opt/giropops
+deployment_files:
+  v1: app-v1.yml
+  v2: app-v2.yml
 number_replicas_old_version: 1
 number_replicas_new_version: 10
 old_version: 1.0.0
