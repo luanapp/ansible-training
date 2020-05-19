@@ -1,9 +1,9 @@
 ---
 # vars file for create-instances
-instance_type: t2.medium
-sg_name: ansible-sg
-image: ami-0bb677666cd3fd188
-keypair: Training
-region: sa-east-1
-count: 3
-profile: ansible-training
+ec2_instance_type: t2.medium
+ec2_sg_name: ansible-sg
+ec2_image: ami-0bb677666cd3fd188
+ec2_keypair: Training
+ec2_region: sa-east-1
+ec2_count: 3
+ec2_profile: ansible-training
