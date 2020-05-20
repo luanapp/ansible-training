@@ -1,17 +1,11 @@
-- name: Create k8s inventory file
-  file:
-    path: "{{ k8s_inventory_file }}"
-    state: touch
-
-- name: Fill k8s inventory file initial content
+- name: Copy k8s inventory template file
   local_action:
-    module: lineinfile
-    dest: "{{ k8s_inventory_file }}"
-    line: "{{ item }}"
+    module: copy
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    force: yes
   with_items:
-    - "[k8s-master]"
-    - "[k8s-workers]"
-    - "[k8s-workers:vars]"
+    - { src: "{{ k8s_inventory_file }}", dest: "./{{ k8s_inventory_file }}" }
 
 - name: Fill kubernetes main server info
   local_action:

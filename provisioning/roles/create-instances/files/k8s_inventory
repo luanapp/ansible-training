@@ -1,0 +1,3 @@
+[k8s-master]
+[k8s-workers]
+[k8s-workers:vars]
