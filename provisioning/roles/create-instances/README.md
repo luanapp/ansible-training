@@ -1,4 +1,4 @@
-Provisioning/create-instances
+create-instances
 =========
 
 This roles makes the provision `ec2_count` ec2 instances to be used as kubernetes main server and 2 node servers
@@ -26,13 +26,13 @@ There are some variables require for the role to run
 Example Playbook
 ----------------
 
-The inventory must have one section named `[kubernetes]`, as this is the place where instances IP's will be written
-
 Bellow is an example of how to run the role
 
     - hosts: local
       roles: 
       - { role: create-instances, tags: ["create_instances_role"] } 
+At the end of the role execution, a file named kubernetes_inventory will be created. with one main node and 2 workers nodes.
+The ec2 instance with the name tag `k8s-main` is the main node, and the others will have the name `k8s-worker-[1:2]`
 
 License
 -------
