@@ -14,11 +14,9 @@
 - name: Installing k8s module dependencies
   pip:
     name: 
-      - {{ item }}
+      - openshift
+      - PyYAML
     state: forcereinstall
-  with_items:
-    - openshift
-    - PyYAML
   register: install_dependencies
 
 - name: Copy app v1 and v2 deployment file

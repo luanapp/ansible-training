@@ -1,3 +1,4 @@
 ---
 # tasks file for create-instances
 - include_tasks: provisioning.yml
+- include_tasks: create_k8s_inventory.yml

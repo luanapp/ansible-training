@@ -1,0 +1,44 @@
+- name: Create k8s inventory file
+  file:
+    path: "{{ k8s_inventory_file }}"
+    state: touch
+
+- name: Fill k8s inventory file initial content
+  local_action:
+    module: lineinfile
+    dest: "{{ k8s_inventory_file }}"
+    line: "{{ item }}"
+  with_items:
+    - "[k8s-master]"
+    - "[k8s-workers]"
+    - "[k8s-workers:vars]"
+
+- name: Fill kubernetes main server info
+  local_action:
+    module: lineinfile
+    dest: "{{ k8s_inventory_file }}"
+    regexp: "{{ groups['kubernetes_public'] | first }}"
+    insertafter: '\[k8s-master\]'
+    line: "{{ groups['kubernetes_public'] | first }}"
+
+- name: Fill kubernetes nodes info
+  local_action:
+    module: lineinfile
+    dest: "{{ k8s_inventory_file }}"
+    regexp: "{{ item.1 }}"
+    insertafter: '\[k8s-workers\]'
+    line: "{{ item.1 }}"
+  with_indexed_items:
+    - "{{ groups['kubernetes_public'] }}"
+  when: item.0 > 0
+
+- name: Fill kubernetes nodes variables
+  local_action:
+    module: lineinfile
+    dest: "{{ k8s_inventory_file }}"
+    regexp: "{{ item }}"
+    insertafter: '\[k8s-workers:vars\]'
+    line: "{{ item }}"
+  with_items:
+    - "K8S_MASTER_NODE_IP={{ groups['kubernetes_private'] | first }}"
+    - "K8S_API_SECURE_PORT=6443"

@@ -3,8 +3,8 @@
     module: ec2_group
     name: "{{ ec2_sg_name }}"
     description: "Provides SSH universal access"
-    profile: "{{ profile }}"
-    region: "{{ region }}"
+    profile: "{{ ec2_profile }}"
+    region: "{{ ec2_region }}"
 
     rules:
     - proto: tcp
@@ -79,35 +79,25 @@
     group: "{{ ec2_sg_name }}"
     instance_type: "{{ ec2_instance_type }}"
     image: "{{ ec2_image }}"
-    profile: "{{ profile }}"
+    profile: "{{ ec2_profile }}"
     wait: true
-    region: "{{ region }}"
+    region: "{{ ec2_region }}"
     keypair: "{{ ec2_keypair }}"
     count: "{{ ec2_count }}"
   register: ec2
 
-- name: Add instance to tmp inventory
+- name: Add instances public IPs to kubernetes inventory
   add_host:
-    name: "{{ item.public_ip }}"
-    groups: ansible-training
+    hostname: "{{ item.public_ip }}"
+    groups: kubernetes_public
+    inventory_dir: "./"
   with_items: "{{ ec2.instances }}"
 
-- name: Add instance public IP to hosts file
-  local_action:
-    module: lineinfile
-    dest: "./hosts"
-    regexp: "{{ item.public_ip }}"
-    insertafter: "[kubernetes]"
-    line: "{{ item.public_ip }}"
-  with_items: "{{ ec2.instances }}"
-
-- name: Add instance private IP to hosts file
-  local_action:
-    module: lineinfile
-    dest: "./hosts"
-    regexp: "{{ item.private_ip }}"
-    insertafter: "[kubernetes]"
-    line: "{{ item.private_ip }}"
+- name: Add instances private IPs to kubernetes inventory
+  add_host:
+    hostname: "{{ item.private_ip }}"
+    groups: kubernetes_private
+    inventory_dir: "./"
   with_items: "{{ ec2.instances }}"
 
 - name: Wait SSH
